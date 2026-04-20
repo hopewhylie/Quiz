@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#FDF8F0;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
+.wrap{max-width:640px;width:100%}
+.screen{display:none}.screen.active{display:block}
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem}
+.brand-dot{width:8px;height:8px;border-radius:50%;background:#1A6B72;flex-shrink:0}
+.brand-name{font-size:11px;font-weight:500;color:#1A6B72;letter-spacing:.1em;text-transform:uppercase}
+.eyebrow{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:6px}
+.hero-title{font-size:24px;font-weight:600;color:#1C1C1C;line-height:1.3;margin-bottom:10px}
+.hero-sub{font-size:15px;color:#3D3D3D;line-height:1.65;margin-bottom:1.25rem}
+.profiles-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:1.5rem}
+.profile-pill{border-radius:20px;padding:5px 6px;text-align:center;font-size:11px;font-weight:500}
+.start-btn{display:inline-block;padding:14px 32px;background:#1A6B72;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;margin-bottom:10px}
+.start-btn:hover{background:#085041}
+.hero-note{font-size:12px;color:#888}
+.prog-bar{height:3px;background:#E0E0E0;border-radius:2px;margin-bottom:1.75rem}
+.prog-fill{height:100%;background:#1A6B72;border-radius:2px;transition:width .4s ease}
+.q-meta{font-size:12px;color:#888;margin-bottom:4px}
+.q-cat{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#1A6B72;margin-bottom:8px}
+.q-text{font-size:17px;font-weight:500;color:#1C1C1C;line-height:1.5;margin-bottom:1.25rem}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem}
+.opt{padding:12px 16px;border:1px solid #DDD;border-radius:8px;cursor:pointer;font-size:14px;color:#1C1C1C;background:#fff;line-height:1.4;transition:border-color .15s,background .15s;text-align:left;width:100%}
+.opt:hover{border-color:#1A6B72;background:#F0F9FA}
+.opt.sel{border-color:#1A6B72;background:#E8F4F5;color:#085041;border-width:2px}
+.nav{display:flex;justify-content:space-between;align-items:center}
+.btn{padding:10px 22px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;border:1px solid #DDD;background:#fff;color:#1C1C1C}
+.btn:hover{background:#F5F5F5}
+.btn-primary{background:#1A6B72;color:#fff;border-color:#1A6B72}
+.btn-primary:hover{background:#085041}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.gate-card{background:#fff;border:1px solid #E0E0E0;border-radius:12px;padding:1.5rem;margin-top:.5rem}
+.gate-icon{width:44px;height:44px;border-radius:50%;background:#E8F4F5;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+.gate-title{font-size:19px;font-weight:600;color:#1C1C1C;margin-bottom:6px}
+.gate-sub{font-size:14px;color:#3D3D3D;line-height:1.6;margin-bottom:1.25rem}
+.gate-preview{background:#F5F5F3;border-radius:8px;padding:.875rem 1rem;margin-bottom:1.25rem}
+.gate-preview-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#1A6B72;margin-bottom:8px}
+.gate-preview-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#3D3D3D;margin-bottom:5px;line-height:1.4}
+.check-circle{width:16px;height:16px;border-radius:50%;background:#E8F4F5;border:1px solid #9FE1CB;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.field-label{font-size:13px;font-weight:500;color:#1C1C1C;margin-bottom:6px;display:block}
+.field-input{width:100%;border:1px solid #DDD;border-radius:8px;padding:11px 14px;font-size:15px;background:#fff;color:#1C1C1C;outline:none;margin-bottom:14px}
+.field-input:focus{border-color:#1A6B72;box-shadow:0 0 0 3px rgba(26,107,114,.1)}
+.gate-submit{width:100%;background:#1A6B72;color:#fff;border:none;border-radius:8px;padding:14px;font-size:16px;font-weight:500;cursor:pointer}
+.gate-submit:hover{background:#085041}
+.gate-privacy{font-size:12px;color:#888;text-align:center;margin-top:10px}
+.err-msg{font-size:13px;color:#E24B4A;margin-bottom:10px;display:none}
+.webhook-status{font-size:12px;text-align:center;padding:8px;border-radius:6px;margin-top:10px;display:none}
+.webhook-ok{background:#EAF3DE;color:#27500A}
+.webhook-fail{background:#FCEBEB;color:#501313}
+.spin-wrap{text-align:center;padding:4rem 0}
+.spinner{width:36px;height:36px;border:3px solid #E0E0E0;border-top-color:#1A6B72;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-msg{font-size:15px;color:#888}
+.profile-hero{background:#F5F5F3;border-radius:12px;padding:1.25rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem}
+.profile-badge-lg{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:600;text-align:center;line-height:1.3;padding:4px}
+.profile-name{font-size:19px;font-weight:600;color:#1C1C1C;margin-bottom:4px}
+.profile-tagline{font-size:14px;color:#3D3D3D;line-height:1.55}
+.score-bars{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:1rem}
+.bar-wrap{text-align:center}
+.bar-track{height:60px;background:#F0F0EE;border-radius:4px;display:flex;align-items:flex-end;overflow:hidden}
+.bar-fill{width:100%;border-radius:4px 4px 0 0;transition:height 1s ease}
+.bar-lbl{font-size:10px;color:#888;margin-top:5px;line-height:1.3}
+.bar-pct{font-size:11px;font-weight:600;color:#1C1C1C;margin-top:2px}
+.ai-card{border:1px solid #E0E0E0;border-radius:12px;padding:1.25rem;margin-bottom:1rem;background:#fff}
+.ai-lbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:#1A6B72;margin-bottom:10px}
+.ai-body{font-size:14px;color:#1C1C1C;line-height:1.75}
+.ai-body p{margin-bottom:8px}.ai-body p:last-child{margin-bottom:0}
+.discovery-card{background:#E8F4F5;border:1px solid #9FE1CB;border-radius:12px;padding:1.25rem;margin-top:1rem}
+.disc-eyebrow{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:#0F6E56;margin-bottom:6px}
+.disc-title{font-size:18px;font-weight:600;color:#085041;margin-bottom:8px}
+.disc-body{font-size:14px;color:#0F6E56;line-height:1.6;margin-bottom:1rem}
+.disc-what{background:#fff;border-radius:8px;padding:.875rem 1rem;margin-bottom:1rem}
+.disc-what-lbl{font-size:11px;font-weight:500;color:#1A6B72;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.disc-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#085041;margin-bottom:6px;line-height:1.4}
+.disc-item:last-child{margin-bottom:0}
+.disc-dot{width:5px;height:5px;border-radius:50%;background:#1A6B72;margin-top:5px;flex-shrink:0}
+.disc-btn{width:100%;background:#1A6B72;color:#fff;border:none;border-radius:8px;padding:13px;font-size:15px;font-weight:500;cursor:pointer}
+.disc-btn:hover{background:#085041}
+.disc-note{font-size:12px;color:#0F6E56;text-align:center;margin-top:8px}
+.reset-lnk{text-align:center;margin-top:1rem}
+.reset-lnk button{background:none;border:none;font-size:13px;color:#888;cursor:pointer;text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div id="intro" class="screen active">
+  <div class="brand"><div class="brand-dot"></div><span class="brand-name">In Her Prime — Menopause Assessment</span></div>
+  <p class="eyebrow">Free personal assessment</p>
+  <h1 class="hero-title">What is menopause costing you — and what's possible on the other side?</h1>
+  <p class="hero-sub">Answer 10 questions and receive a personalized symptom profile across five key areas, with an AI-generated insight report written specifically for you.</p>
+  <div class="profiles-row">
+    <div class="profile-pill" style="background:#E8F4F5;color:#085041">Cognitive</div>
+    <div class="profile-pill" style="background:#FAEEDA;color:#633806">Sleep & energy</div>
+    <div class="profile-pill" style="background:#EAF3DE;color:#27500A">Metabolic</div>
+    <div class="profile-pill" style="background:#FBEAF0;color:#72243E">Emotional</div>
+    <div class="profile-pill" style="background:#EEEDFE;color:#3C3489">Intimacy</div>
+  </div>
+  <button class="start-btn" id="startBtn">Begin your assessment</button>
+  <p class="hero-note">Takes 4 minutes &nbsp;·&nbsp; Your results are personalized to you</p>
+</div>
+
+<div id="qscreen" class="screen">
+  <div class="brand"><div class="brand-dot"></div><span class="brand-name">In Her Prime — Menopause Assessment</span></div>
+  <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+  <p class="q-meta" id="qmeta"></p>
+  <p class="q-cat" id="qcat"></p>
+  <p class="q-text" id="qtext"></p>
+  <div class="opts" id="opts"></div>
+  <div class="nav">
+    <button class="btn" id="backBtn">Back</button>
+    <button class="btn btn-primary" id="nextBtn" disabled>Next</button>
+  </div>
+</div>
+
+<div id="gate" class="screen">
+  <div class="brand"><div class="brand-dot"></div><span class="brand-name">In Her Prime — Menopause Assessment</span></div>
+  <div class="gate-card">
+    <div class="gate-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A6B72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+    </div>
+    <h2 class="gate-title">Your personalized symptom profile is ready</h2>
+    <p class="gate-sub">Enter your name and email to unlock your full results — including your primary symptom profile, what it's costing you at work, and your three most powerful next steps.</p>
+    <div class="gate-preview">
+      <p class="gate-preview-label">Your report includes</p>
+      <div class="gate-preview-item"><div class="check-circle"><svg viewBox="0 0 10 10" fill="none" stroke="#1A6B72" stroke-width="2.5"><polyline points="2,5 4,7 8,3"/></svg></div>Your personalized symptom profile across all 5 areas</div>
+      <div class="gate-preview-item"><div class="check-circle"><svg viewBox="0 0 10 10" fill="none" stroke="#1A6B72" stroke-width="2.5"><polyline points="2,5 4,7 8,3"/></svg></div>What this is costing you professionally right now</div>
+      <div class="gate-preview-item"><div class="check-circle"><svg viewBox="0 0 10 10" fill="none" stroke="#1A6B72" stroke-width="2.5"><polyline points="2,5 4,7 8,3"/></svg></div>Your three most powerful evidence-based next steps</div>
+      <div class="gate-preview-item"><div class="check-circle"><svg viewBox="0 0 10 10" fill="none" stroke="#1A6B72" stroke-width="2.5"><polyline points="2,5 4,7 8,3"/></svg></div>A clear path forward — tailored to your profile</div>
+    </div>
+    <label class="field-label" for="nameIn">First name</label>
+    <input class="field-input" type="text" id="nameIn" placeholder="Your first name">
+    <label class="field-label" for="emailIn">Email address</label>
+    <input class="field-input" type="email" id="emailIn" placeholder="your@email.com">
+    <p class="err-msg" id="errMsg">Please enter a valid name and email address.</p>
+    <button class="gate-submit" id="gateSubmit">Unlock my results</button>
+    <p class="webhook-status" id="webhookStatus"></p>
+    <p class="gate-privacy">Your details are safe. No spam — ever. Unsubscribe any time.</p>
+  </div>
+</div>
+
+<div id="loading" class="screen">
+  <div class="spin-wrap">
+    <div class="spinner"></div>
+    <p class="spin-msg" id="spinMsg">Analyzing your symptom profile...</p>
+  </div>
+</div>
+
+<div id="results" class="screen">
+  <div class="brand"><div class="brand-dot"></div><span class="brand-name">Your personal symptom profile</span></div>
+  <div class="profile-hero" id="profileHero"></div>
+  <div class="score-bars" id="scoreBars"></div>
+  <div class="ai-card"><p class="ai-lbl">What your profile means</p><div class="ai-body" id="c1"><div class="spinner" style="width:22px;height:22px;border-width:2px"></div></div></div>
+  <div class="ai-card"><p class="ai-lbl">What this is costing you at work</p><div class="ai-body" id="c2"><div class="spinner" style="width:22px;height:22px;border-width:2px"></div></div></div>
+  <div class="ai-card"><p class="ai-lbl">Your three most powerful next steps</p><div class="ai-body" id="c3"><div class="spinner" style="width:22px;height:22px;border-width:2px"></div></div></div>
+  <div class="discovery-card">
+    <p class="disc-eyebrow">Your next step</p>
+    <p class="disc-title" id="discTitle">Book your free discovery call</p>
+    <p class="disc-body" id="discBody">Your profile gives us a clear starting point. In a free 30-minute discovery call, we'll look at your results together, talk through what's having the biggest impact on your life and career right now, and explore whether working together is the right fit.</p>
+    <div class="disc-what">
+      <p class="disc-what-lbl">On the call we'll cover</p>
+      <div class="disc-item"><div class="disc-dot"></div>Your symptom profile in more depth — what's driving it and why</div>
+      <div class="disc-item"><div class="disc-dot"></div>The specific areas where targeted support will make the biggest difference</div>
+      <div class="disc-item"><div class="disc-dot"></div>How Restore the Calm addresses your primary profile</div>
+      <div class="disc-item"><div class="disc-dot"></div>Whether we're a good fit to work together</div>
+    </div>
+    <button class="disc-btn" id="discCallBtn">Book my free discovery call</button>
+    <p class="disc-note">30 minutes &nbsp;·&nbsp; No obligation &nbsp;·&nbsp; Completely confidential</p>
+  </div>
+  <div class="reset-lnk"><button id="resetBtn">Start again</button></div>
+</div>
+
+</div>
+
+<script>
+var WEBHOOK_URL='https://hook.us2.make.com/mwnd001lwuhkq0m6nrq6b5ulrvwfgy6u';
+var CATS=["Cognitive","Sleep & energy","Metabolic","Emotional","Intimacy"];
+var CAT_BG=["#E8F4F5","#FAEEDA","#EAF3DE","#FBEAF0","#EEEDFE"];
+var CAT_TEXT=["#085041","#633806","#27500A","#72243E","#3C3489"];
+var questions=[
+  {cat:0,text:"How often do you experience difficulty finding words or losing your train of thought mid-sentence?",opts:[["Rarely or never",0],["Occasionally — maybe once a week",1],["Several times a week",2],["Almost every day — it's affecting my confidence at work",3]]},
+  {cat:0,text:"How would you describe your ability to focus and concentrate on complex tasks compared to two years ago?",opts:[["Just as sharp as before",0],["Slightly less focused but manageable",1],["Noticeably reduced — I have to work much harder",2],["Significantly impaired — sustained focus is genuinely difficult",3]]},
+  {cat:1,text:"How many nights per week do you wake during the night and struggle to get back to sleep?",opts:[["Rarely — I sleep through most nights",0],["1–2 nights a week",1],["3–4 nights a week",2],["5 or more nights — this is my biggest issue",3]]},
+  {cat:1,text:"How would you describe your energy levels across the working day?",opts:[["Good — I maintain consistent energy",0],["I hit a wall mid-afternoon but manage",1],["I'm exhausted by lunchtime most days",2],["A deep fatigue that rest doesn't seem to fix",3]]},
+  {cat:2,text:"Have you noticed changes in your body composition — particularly around your waist — despite no major changes to diet or exercise?",opts:[["No noticeable changes",0],["Slight changes I can accept",1],["Significant changes that are frustrating me",2],["Dramatic changes affecting how I feel in my own skin",3]]},
+  {cat:2,text:"How would you describe your relationship with food, metabolism, and energy after meals compared to before perimenopause?",opts:[["Unchanged — my metabolism feels the same",0],["Slightly different — more bloating or energy dips",1],["Noticeably different — nothing seems to work as it used to",2],["Completely changed — I feel like I'm fighting my own body",3]]},
+  {cat:3,text:"How often do you experience sudden emotional shifts — irritability, unexpected tearfulness, or not recognizing yourself?",opts:[["Rarely — my emotional baseline feels stable",0],["Occasionally — flashes of irritability",1],["Regularly — I have days where I feel unlike myself",2],["Frequently — my emotional volatility is affecting my work and relationships",3]]},
+  {cat:3,text:"How connected do you feel to your sense of identity and purpose right now?",opts:[["Strongly connected — I know who I am",0],["Mostly connected with occasional doubt",1],["I'm questioning things I used to feel certain about",2],["I feel genuinely uncertain about who I am in this chapter",3]]},
+  {cat:4,text:"How would you describe your level of desire or interest in intimacy compared to before perimenopause?",opts:[["No significant change",0],["Mildly reduced but not a major concern",1],["Noticeably reduced — affecting my relationship or sense of self",2],["Significantly reduced or absent — I haven't known how to address it",3]]},
+  {cat:4,text:"Are you experiencing any physical discomfort that affects your intimate life or relationship with your own body?",opts:[["No physical discomfort",0],["Mild occasional discomfort",1],["Regular discomfort I'm managing but not addressing",2],["Significant discomfort I've not felt able to discuss with anyone",3]]}
+];
+var answers=[],current=0,userName='';
+function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');}
+function renderQ(){
+  var q=questions[current];
+  document.getElementById('prog').style.width=Math.round((current/questions.length)*100)+'%';
+  document.getElementById('qmeta').textContent='Question '+(current+1)+' of '+questions.length;
+  document.getElementById('qcat').textContent=CATS[q.cat];
+  document.getElementById('qtext').textContent=q.text;
+  var el=document.getElementById('opts');el.innerHTML='';
+  q.opts.forEach(function(o,i){
+    var d=document.createElement('button');
+    d.className='opt'+(answers[current]===i?' sel':'');
+    d.textContent=o[0];d.setAttribute('data-idx',i);
+    el.appendChild(d);
+  });
+  document.getElementById('nextBtn').disabled=answers[current]===undefined;
+  document.getElementById('backBtn').disabled=current===0;
+  document.getElementById('nextBtn').textContent=current===questions.length-1?'See my results':'Next';
+}
+function selectOpt(idx){answers[current]=idx;document.querySelectorAll('.opt').forEach(function(d,i){d.classList.toggle('sel',i===idx);});document.getElementById('nextBtn').disabled=false;}
+function goNext(){if(answers[current]===undefined)return;if(current<questions.length-1){current++;renderQ();}else{showScreen('gate');}}
+function goBack(){if(current>0){current--;renderQ();}}
+function sendToWebhook(payload){
+  fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+  .then(function(r){
+    var ws=document.getElementById('webhookStatus');
+    ws.textContent=r.ok?'Your results are being personalized — check your email shortly!':'Continuing to your results...';
+    ws.className='webhook-status '+(r.ok?'webhook-ok':'webhook-fail');
+    ws.style.display='block';
+  })
+  .catch(function(){});
+}
+function submitGate(){
+  var name=document.getElementById('nameIn').value.trim();
+  var email=document.getElementById('emailIn').value.trim();
+  var err=document.getElementById('errMsg');
+  if(!name||!email||email.indexOf('@')<0||email.indexOf('.')<0){err.style.display='block';return;}
+  err.style.display='none';
+  userName=name;
+  var catScores=[0,0,0,0,0];
+  questions.forEach(function(q,i){if(answers[i]!==undefined)catScores[q.cat]+=q.opts[answers[i]][1];});
+  var catPct=catScores.map(function(s){return Math.round((s/6)*100);});
+  var primary=catPct.indexOf(Math.max.apply(null,catPct));
+  sendToWebhook({first_name:name,email:email,primary_profile:CATS[primary],cognitive_score:catScores[0],sleep_score:catScores[1],metabolic_score:catScores[2],emotional_score:catScores[3],intimacy_score:catScores[4],cognitive_pct:catPct[0],sleep_pct:catPct[1],metabolic_pct:catPct[2],emotional_pct:catPct[3],intimacy_pct:catPct[4],q1_score:answers[0]!==undefined?questions[0].opts[answers[0]][1]:0,q2_score:answers[1]!==undefined?questions[1].opts[answers[1]][1]:0,q3_score:answers[2]!==undefined?questions[2].opts[answers[2]][1]:0,q4_score:answers[3]!==undefined?questions[3].opts[answers[3]][1]:0,q5_score:answers[4]!==undefined?questions[4].opts[answers[4]][1]:0,q6_score:answers[5]!==undefined?questions[5].opts[answers[5]][1]:0,q7_score:answers[6]!==undefined?questions[6].opts[answers[6]][1]:0,q8_score:answers[7]!==undefined?questions[7].opts[answers[7]][1]:0,q9_score:answers[8]!==undefined?questions[8].opts[answers[8]][1]:0,q10_score:answers[9]!==undefined?questions[9].opts[answers[9]][1]:0});
+  runAnalysis();
+}
+function runAnalysis(){
+  showScreen('loading');
+  var msgs=["Analyzing your symptom profile...","Building your personal report...","Generating your insights...","Almost ready..."];
+  var mi=0;
+  var iv=setInterval(function(){if(++mi<msgs.length)document.getElementById('spinMsg').textContent=msgs[mi];},950);
+  setTimeout(function(){clearInterval(iv);buildResults();showScreen('results');},3800);
+}
+function buildResults(){
+  var catScores=[0,0,0,0,0];
+  questions.forEach(function(q,i){if(answers[i]!==undefined)catScores[q.cat]+=q.opts[answers[i]][1];});
+  var catPct=catScores.map(function(s){return Math.round((s/6)*100);});
+  var primary=catPct.indexOf(Math.max.apply(null,catPct));
+  var sorted=[...catPct.map(function(v,i){return{v:v,i:i};})].sort(function(a,b){return b.v-a.v;});
+  var secondary=sorted[1].i;
+  window._profile={catPct:catPct,primary:primary,primaryName:CATS[primary],secondary:secondary,answers:questions.map(function(q,i){return{cat:CATS[q.cat],answer:q.opts[answers[i]||0][0],score:q.opts[answers[i]||0][1],maxScore:3};})};
+  var taglines=["The clarity and precision your career is built on — right now, that's where menopause is having its biggest impact.","The fuel everything else runs on. Right now, your sleep and energy are where the greatest cost is accumulating.","Your body has changed the rules without warning you. The metabolic dimension is where you're feeling it most.","The inner landscape your outer performance depends on. Right now, this area is asking for the most attention.","The most private dimension — and the one most rarely addressed. Your intimacy profile is where the most significant impact is showing up."];
+  var hero=document.getElementById('profileHero');
+  hero.innerHTML='<div class="profile-badge-lg" style="background:'+CAT_BG[primary]+';color:'+CAT_TEXT[primary]+'">'+CATS[primary]+'<br>profile</div><div><p class="profile-name">'+(userName?userName+"'s results":'Your results')+'</p><p class="profile-tagline">'+taglines[primary]+'</p></div>';
+  var bars=document.getElementById('scoreBars');bars.innerHTML='';
+  CATS.forEach(function(cat,i){var pct=catPct[i];var col=pct>=67?'#E24B4A':pct>=34?'#EF9F27':'#1D9E75';bars.innerHTML+='<div class="bar-wrap"><div class="bar-track"><div class="bar-fill" id="bar'+i+'" style="height:0%;background:'+col+'"></div></div><div class="bar-lbl">'+cat+'</div><div class="bar-pct">'+pct+'%</div></div>';});
+  setTimeout(function(){CATS.forEach(function(_,i){var b=document.getElementById('bar'+i);if(b)b.style.height=catPct[i]+'%';});},150);
+  if(userName){document.getElementById('discTitle').textContent='Book your free discovery call, '+userName;document.getElementById('discBody').textContent="Your profile gives us a clear starting point, "+userName+". In a free 30-minute discovery call, we'll look at your results together, talk through what's having the biggest impact on your life and career right now, and explore whether working together is the right fit for you.";}
+  callAI();
+}
+function callAI(){
+  var p=window._profile;var name=userName||'this professional woman';
+  var summary='Name: '+name+'. Primary symptom profile: '+CATS[p.primary]+' ('+p.catPct[p.primary]+'%). Secondary: '+CATS[p.secondary]+' ('+p.catPct[p.secondary]+'%). All scores: '+CATS.map(function(c,i){return c+': '+p.catPct[i]+'%';}).join(', ')+'. Detailed answers: '+p.answers.map(function(a){return a.cat+':"'+a.answer+'" ('+a.score+'/'+a.maxScore+')';}).join('; ');
+  var prompts=[
+    {id:'c1',p:'You are a warm, expert menopause health coach for high-achieving professional women. '+summary+' Write 2 short paragraphs explaining what her symptom profile means physiologically. Address her by name ('+name+') at least once. Be warm, direct, empowering. No bullet points. American spelling.'},
+    {id:'c2',p:'You are a menopause health coach for professional women. '+summary+' Write 2 paragraphs describing what this symptom profile is costing '+name+' professionally. Be honest and specific. No bullet points. American spelling.'},
+    {id:'c3',p:'You are a menopause health coach for professional women. '+summary+' Write exactly 3 numbered next steps for '+name+' based on her profile. Each step is 2 sentences. End with: "A free discovery call is the best place to map these steps to your life and your schedule." American spelling.'}
+  ];
+  prompts.forEach(function(item){
+    fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:1000,messages:[{role:'user',content:item.p}]})})
+    .then(function(r){return r.json();})
+    .then(function(data){var text=(data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:'Unable to generate — please try again.';document.getElementById(item.id).innerHTML=text.split('\n').filter(function(l){return l.trim();}).map(function(l){return'<p>'+l.trim()+'</p>';}).join('');})
+    .catch(function(){document.getElementById(item.id).innerHTML='<p style="color:#888">Unable to load — please refresh and try again.</p>';});
+  });
+}
+document.getElementById('startBtn').addEventListener('click',function(){answers=[];current=0;renderQ();showScreen('qscreen');});
+document.getElementById('opts').addEventListener('click',function(e){var btn=e.target.closest('.opt');if(btn)selectOpt(parseInt(btn.getAttribute('data-idx'),10));});
+document.getElementById('nextBtn').addEventListener('click',goNext);
+document.getElementById('backBtn').addEventListener('click',goBack);
+document.getElementById('gateSubmit').addEventListener('click',submitGate);
+document.getElementById('emailIn').addEventListener('keydown',function(e){if(e.key==='Enter')submitGate();});
+document.getElementById('discCallBtn').addEventListener('click',function(){window.location.href='YOUR_BOOKING_LINK_HERE';});
+document.getElementById('resetBtn').addEventListener('click',function(){answers=[];current=0;userName='';showScreen('intro');});
+</script>
+</body>
+</html>
